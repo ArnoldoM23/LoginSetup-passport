@@ -10,9 +10,9 @@ app.config(['$stateProvider', '$urlRouterProvider',  function($stateProvider, $u
 			templateUrl: '/home.html',
 			controller: 'MainCtrl',
 			onEnter: ['$state', 'Auth', function($state, Auth){
-		    if(!Auth.isLoggedIn()){
-		      $state.go('login');
-		    }
+		    // if(!Auth.isLoggedIn()){
+		    //   $state.go('login');
+		    // }
 		  }]
 		})
 
@@ -87,6 +87,14 @@ app.controller('AuthCtrl', ['$scope', '$state','Auth',function($scope, $state, A
       $state.go('home');
     });
   };
+
+  $scope.facebook = function(){
+  	Auth.facebook().error(function(error){
+  		$scope.error = error;
+  	}).then(function(){
+  		$state.go('home');
+  	})
+  }
 }]);
 
 

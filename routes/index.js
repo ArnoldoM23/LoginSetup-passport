@@ -32,7 +32,6 @@ router.post('/signup', function(req, res, next){
   user.hashPassword(req.body.password)
 // save changes to the database
   user.save(function (err){
-    
     if(err){ return next(err); }
     // Respond to the user with token
    res.json({token: user.generateJWT()})
@@ -48,7 +47,6 @@ router.post('/login', function(req, res, next){
 // Authenticate using password
   passport.authenticate('local', function(err, user, info){
     if(err){ return next(err); }
-
     if(user){
       return res.json({token: user.generateJWT()});
     } else {
@@ -56,5 +54,21 @@ router.post('/login', function(req, res, next){
     }
   })(req, res, next);
 });
+
+// Redirect the user to Facebook for authentication.  When complete,
+// Facebook will redirect the user back to the application at
+//     /auth/facebook/callback
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+// Facebook will redirect the user to this URL after approval.  Finish the
+// authentication process by attempting to obtain an access token.  If
+// access was granted, the user will be logged in.  Otherwise,
+// authentication has failed.
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {failureRedirect: '/login' }), 
+  function(req, res){
+    console.log('body in body of facebook+++ ', req.body)
+    res.redirect('/')
+  });
 
 module.exports = router;

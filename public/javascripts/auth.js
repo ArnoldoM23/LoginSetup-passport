@@ -39,5 +39,12 @@ angular.module('Authentication', [])
     $window.localStorage.removeItem('Login-setup');
     $location.path('/login')
   };
+  Auth.facebook = function(user){
+    return $http.get('/auth/facebook').success(function(data){
+      console.log('get in auth angular====',data)
+      Auth.saveToken(data.token);
+      $location.path('/home')
+    });
+  };
   return Auth;
 }])
