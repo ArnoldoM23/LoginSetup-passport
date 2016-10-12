@@ -40,7 +40,6 @@ router.post('/signup', function(req, res, next){
 });
 
 router.post('/login', function(req, res, next){
-  console.log('inside of post for login', req.body)
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Please fill out all fields'});
   }
@@ -69,6 +68,24 @@ router.get('/auth/facebook/callback',
   function(req, res){
     console.log('body in body of facebook+++ ', req.body)
     res.redirect('/')
+  });
+
+router.get('/auth/github',
+  passport.authenticate('github', { scope: [ 'user:email' ] }),
+  function(req, res){
+    // The request will be redirected to GitHub for authentication, so this
+    // function will not be called.
+  });
+
+// GET /auth/github/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function will be called,
+//   which, in this example, will redirect the user to the home page.
+router.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
   });
 
 module.exports = router;
